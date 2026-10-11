@@ -1,5 +1,4 @@
-import React, { useEffect, useRef } from 'react';
-import * as THREE from 'three';
+import React from 'react';
 
 interface Service3DObjectProps {
   type: 'cube' | 'neural' | 'torus' | 'cloud' | 'crystal';
@@ -7,172 +6,254 @@ interface Service3DObjectProps {
 }
 
 export const Service3DObject: React.FC<Service3DObjectProps> = ({ type, isHovered }) => {
-  const mountRef = useRef<HTMLDivElement>(null);
-  const hoverRef = useRef(false);
+  return (
+    <div
+      className="w-24 h-24 relative flex items-center justify-center pointer-events-none select-none transition-transform duration-500 ease-out"
+      style={{
+        perspective: '600px',
+        transform: isHovered ? 'scale(1.08)' : 'scale(1.0)',
+      }}
+    >
+      <div
+        className="relative w-full h-full flex items-center justify-center transition-transform duration-700 ease-out"
+        style={{
+          transformStyle: 'preserve-3d',
+          transform: isHovered ? 'rotateY(24deg) rotateX(-12deg)' : 'rotateY(0deg) rotateX(0deg)',
+        }}
+      >
+        {/* Subtle ambient metallic glow */}
+        <div
+          className={`absolute inset-0 rounded-full blur-xl transition-opacity duration-500 ${
+            isHovered ? 'opacity-35 bg-white/20' : 'opacity-10 bg-white/10'
+          }`}
+        />
 
-  useEffect(() => {
-    hoverRef.current = isHovered;
-  }, [isHovered]);
+        {/* 1. SOFTWARE DEVELOPMENT: Precision Metallic Cube & Wireframe Core */}
+        {type === 'cube' && (
+          <div className="relative w-16 h-16 flex items-center justify-center">
+            {/* Outer Rotating Wireframe Cage */}
+            <svg
+              className={`absolute inset-0 w-full h-full transition-transform duration-1000 ${
+                isHovered ? 'rotate-45 scale-105' : 'rotate-0'
+              }`}
+              viewBox="0 0 64 64"
+              fill="none"
+            >
+              <rect
+                x="8"
+                y="8"
+                width="48"
+                height="48"
+                rx="4"
+                stroke="rgba(255,255,255,0.4)"
+                strokeWidth="1.2"
+                strokeDasharray="4 2"
+              />
+              <path
+                d="M8 8L24 24M56 8L40 24M8 56L24 40M56 56L40 40"
+                stroke="rgba(200,200,200,0.3)"
+                strokeWidth="1"
+              />
+            </svg>
 
-  useEffect(() => {
-    const container = mountRef.current;
-    if (!container) return;
+            {/* Inner Metallic Solid Cube */}
+            <div
+              className={`w-9 h-9 rounded border border-neutral-400 bg-gradient-to-br from-neutral-200 via-neutral-400 to-neutral-800 shadow-[0_0_15px_rgba(255,255,255,0.15)] flex items-center justify-center transition-all duration-500 ${
+                isHovered ? 'border-white shadow-[0_0_25px_rgba(255,255,255,0.35)]' : ''
+              }`}
+            >
+              <div className="w-3.5 h-3.5 rounded-sm bg-black/80 border border-white/60 flex items-center justify-center">
+                <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+              </div>
+            </div>
+          </div>
+        )}
 
-    const width = 110;
-    const height = 110;
+        {/* 2. AI SOLUTIONS: Multi-Dimensional Neural Lattice */}
+        {type === 'neural' && (
+          <div className="relative w-16 h-16 flex items-center justify-center">
+            {/* Orbital Rings */}
+            <svg
+              className={`absolute inset-0 w-full h-full transition-transform duration-1000 ${
+                isHovered ? 'rotate-90 scale-110' : 'rotate-12'
+              }`}
+              viewBox="0 0 64 64"
+              fill="none"
+            >
+              <circle
+                cx="32"
+                cy="32"
+                r="26"
+                stroke="rgba(255,255,255,0.3)"
+                strokeWidth="1"
+                strokeDasharray="6 3"
+              />
+              <ellipse
+                cx="32"
+                cy="32"
+                rx="26"
+                ry="12"
+                stroke="rgba(200,200,200,0.35)"
+                strokeWidth="1"
+                transform="rotate(45 32 32)"
+              />
+              <ellipse
+                cx="32"
+                cy="32"
+                rx="26"
+                ry="12"
+                stroke="rgba(200,200,200,0.35)"
+                strokeWidth="1"
+                transform="rotate(-45 32 32)"
+              />
+            </svg>
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 20);
-    camera.position.set(0, 0, 3.4);
+            {/* Neural Synapse Nodes */}
+            <div className="absolute w-2 h-2 rounded-full bg-white shadow-[0_0_8px_#fff] top-3 left-6 animate-pulse" />
+            <div className="absolute w-1.5 h-1.5 rounded-full bg-neutral-300 bottom-3 right-6" />
+            <div className="absolute w-1.5 h-1.5 rounded-full bg-neutral-300 top-8 right-2" />
+            <div className="absolute w-1.5 h-1.5 rounded-full bg-neutral-300 bottom-8 left-2" />
 
-    const renderer = new THREE.WebGLRenderer({
-      alpha: true,
-      antialias: true,
-      powerPreference: 'low-power',
-    });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    container.appendChild(renderer.domElement);
+            {/* Central Cognitive Core */}
+            <div
+              className={`w-7 h-7 rounded-full bg-gradient-to-tr from-neutral-800 via-neutral-300 to-white border border-white flex items-center justify-center transition-all duration-500 shadow-[0_0_20px_rgba(255,255,255,0.25)] ${
+                isHovered ? 'scale-110 shadow-[0_0_30px_rgba(255,255,255,0.5)]' : ''
+              }`}
+            >
+              <div className="w-2.5 h-2.5 rounded-full bg-neutral-900 border border-white/80" />
+            </div>
+          </div>
+        )}
 
-    // Realistic brushed metallic materials
-    const silverMat = new THREE.MeshStandardMaterial({
-      color: 0xe0e0e0,
-      metalness: 0.94,
-      roughness: 0.22,
-    });
+        {/* 3. DESIGN: Kinetic Torus & Golden Ratio Gyro */}
+        {type === 'torus' && (
+          <div className="relative w-16 h-16 flex items-center justify-center">
+            {/* Metallic Torus Ring */}
+            <svg
+              className={`w-14 h-14 transition-transform duration-700 ${
+                isHovered ? 'rotate-180 scale-105' : 'rotate-0'
+              }`}
+              viewBox="0 0 64 64"
+              fill="none"
+            >
+              <defs>
+                <linearGradient id="torusGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#ffffff" />
+                  <stop offset="50%" stopColor="#999999" />
+                  <stop offset="100%" stopColor="#1a1a1a" />
+                </linearGradient>
+              </defs>
+              <circle
+                cx="32"
+                cy="32"
+                r="22"
+                stroke="url(#torusGrad)"
+                strokeWidth="5"
+                className="drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]"
+              />
+              <circle
+                cx="32"
+                cy="32"
+                r="16"
+                stroke="rgba(255,255,255,0.2)"
+                strokeWidth="0.8"
+                strokeDasharray="2 2"
+              />
+              <circle
+                cx="32"
+                cy="32"
+                r="27"
+                stroke="rgba(200,200,200,0.25)"
+                strokeWidth="0.8"
+              />
+            </svg>
 
-    const wireMat = new THREE.MeshBasicMaterial({
-      color: 0xffffff,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.75,
-    });
+            {/* Center Prismatic Axis */}
+            <div
+              className={`absolute w-3.5 h-3.5 rounded-full border border-neutral-300 bg-white transition-all duration-500 shadow-[0_0_12px_#fff] ${
+                isHovered ? 'scale-125' : ''
+              }`}
+            />
+          </div>
+        )}
 
-    const darkMetalMat = new THREE.MeshStandardMaterial({
-      color: 0x222222,
-      metalness: 0.9,
-      roughness: 0.3,
-    });
+        {/* 4. CLOUD & DEVOPS: Distributed Orbital Infrastructure */}
+        {type === 'cloud' && (
+          <div className="relative w-16 h-16 flex items-center justify-center">
+            {/* Cluster Boundary Ring */}
+            <svg
+              className={`absolute inset-0 w-full h-full transition-transform duration-1000 ${
+                isHovered ? 'rotate-90' : 'rotate-0'
+              }`}
+              viewBox="0 0 64 64"
+              fill="none"
+            >
+              <circle
+                cx="32"
+                cy="32"
+                r="27"
+                stroke="rgba(255,255,255,0.3)"
+                strokeWidth="1"
+                strokeDasharray="5 3"
+              />
+              <path
+                d="M18 36L32 20L46 36"
+                stroke="rgba(255,255,255,0.25)"
+                strokeWidth="1.2"
+              />
+            </svg>
 
-    // Lights
-    const keyLight = new THREE.DirectionalLight(0xffffff, 2.5);
-    keyLight.position.set(2, 3, 3);
-    scene.add(keyLight);
+            {/* Cloud Nodes */}
+            <div className="relative flex items-center justify-center">
+              <div
+                className={`w-7 h-7 rounded-full bg-gradient-to-b from-neutral-200 via-neutral-400 to-neutral-700 border border-white flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.2)] transition-transform duration-500 ${
+                  isHovered ? 'scale-110' : ''
+                }`}
+              >
+                <div className="w-2 h-2 rounded-full bg-neutral-900" />
+              </div>
+              <div className="absolute -left-3 top-1 w-5 h-5 rounded-full bg-gradient-to-br from-neutral-300 to-neutral-800 border border-neutral-400/80 -z-10" />
+              <div className="absolute -right-3 top-1 w-5 h-5 rounded-full bg-gradient-to-br from-neutral-300 to-neutral-800 border border-neutral-400/80 -z-10" />
+            </div>
+          </div>
+        )}
 
-    const rimLight = new THREE.DirectionalLight(0xffffff, 3.2);
-    rimLight.position.set(-2, -1, -2);
-    scene.add(rimLight);
+        {/* 5. CONSULTING: Titanium Monolith Crystal */}
+        {type === 'crystal' && (
+          <div className="relative w-16 h-16 flex items-center justify-center">
+            {/* Geometric Orbit */}
+            <svg
+              className={`absolute inset-0 w-full h-full transition-transform duration-1000 ${
+                isHovered ? 'rotate-60 scale-105' : 'rotate-0'
+              }`}
+              viewBox="0 0 64 64"
+              fill="none"
+            >
+              <polygon
+                points="32,4 58,56 6,56"
+                stroke="rgba(255,255,255,0.3)"
+                strokeWidth="1"
+                strokeDasharray="4 2"
+              />
+            </svg>
 
-    const ambient = new THREE.AmbientLight(0x333333, 1.2);
-    scene.add(ambient);
+            {/* Multi-Faceted Crystal */}
+            <div
+              className={`relative w-6 h-11 transition-transform duration-500 ${
+                isHovered ? 'scale-110' : ''
+              }`}
+            >
+              <div className="w-full h-full bg-gradient-to-b from-white via-neutral-400 to-neutral-900 border border-white/80 shadow-[0_0_18px_rgba(255,255,255,0.3)] clip-crystal" />
+            </div>
+          </div>
+        )}
+      </div>
 
-    const group = new THREE.Group();
-    scene.add(group);
-
-    // Create specific object based on type
-    if (type === 'cube') {
-      // Metallic geometric cube with inner core
-      const outerCubeGeo = new THREE.BoxGeometry(1.0, 1.0, 1.0);
-      const outerCube = new THREE.Mesh(outerCubeGeo, silverMat);
-      group.add(outerCube);
-
-      const wireCubeGeo = new THREE.BoxGeometry(1.15, 1.15, 1.15);
-      const wireCube = new THREE.Mesh(wireCubeGeo, wireMat);
-      group.add(wireCube);
-
-      const innerCoreGeo = new THREE.OctahedronGeometry(0.4, 0);
-      const innerCore = new THREE.Mesh(innerCoreGeo, darkMetalMat);
-      group.add(innerCore);
-    } else if (type === 'neural') {
-      // Abstract neural sphere
-      const sphereGeo = new THREE.IcosahedronGeometry(0.75, 1);
-      const sphereMesh = new THREE.Mesh(sphereGeo, wireMat);
-      group.add(sphereMesh);
-
-      const coreSphereGeo = new THREE.SphereGeometry(0.45, 16, 16);
-      const coreSphere = new THREE.Mesh(coreSphereGeo, silverMat);
-      group.add(coreSphere);
-
-      // Orbital electron nodes
-      for (let i = 0; i < 6; i++) {
-        const nodeGeo = new THREE.SphereGeometry(0.06, 8, 8);
-        const node = new THREE.Mesh(nodeGeo, silverMat);
-        const angle = (i / 6) * Math.PI * 2;
-        node.position.set(Math.cos(angle) * 0.9, Math.sin(angle) * 0.9, (Math.random() - 0.5) * 0.4);
-        group.add(node);
-      }
-    } else if (type === 'torus') {
-      // Metallic torus
-      const torusGeo = new THREE.TorusGeometry(0.68, 0.22, 16, 40);
-      const torus = new THREE.Mesh(torusGeo, silverMat);
-      group.add(torus);
-
-      const innerRingGeo = new THREE.TorusGeometry(0.78, 0.015, 8, 32);
-      const innerRing = new THREE.Mesh(innerRingGeo, wireMat);
-      innerRing.rotation.x = Math.PI / 3;
-      group.add(innerRing);
-    } else if (type === 'cloud') {
-      // Minimal geometric wireframe cloud
-      const cloudCenterGeo = new THREE.SphereGeometry(0.55, 12, 10);
-      const cloudCenter = new THREE.Mesh(cloudCenterGeo, silverMat);
-      group.add(cloudCenter);
-
-      const leftBlobGeo = new THREE.SphereGeometry(0.38, 10, 8);
-      const leftBlob = new THREE.Mesh(leftBlobGeo, darkMetalMat);
-      leftBlob.position.set(-0.45, -0.1, 0.1);
-      group.add(leftBlob);
-
-      const rightBlobGeo = new THREE.SphereGeometry(0.42, 10, 8);
-      const rightBlob = new THREE.Mesh(rightBlobGeo, silverMat);
-      rightBlob.position.set(0.48, -0.05, 0.05);
-      group.add(rightBlob);
-
-      const cloudRingGeo = new THREE.TorusGeometry(0.95, 0.012, 6, 32);
-      const cloudRing = new THREE.Mesh(cloudRingGeo, wireMat);
-      cloudRing.rotation.x = Math.PI / 2.3;
-      group.add(cloudRing);
-    } else if (type === 'crystal') {
-      // Metallic hexagonal faceted crystal
-      const crystalGeo = new THREE.CylinderGeometry(0.01, 0.65, 1.35, 6);
-      const crystal = new THREE.Mesh(crystalGeo, silverMat);
-      group.add(crystal);
-
-      const crystalWireGeo = new THREE.CylinderGeometry(0.01, 0.72, 1.45, 6);
-      const crystalWire = new THREE.Mesh(crystalWireGeo, wireMat);
-      group.add(crystalWire);
-    }
-
-    let frameId: number;
-    let clock = new THREE.Clock();
-
-    const animate = () => {
-      frameId = requestAnimationFrame(animate);
-      const elapsed = clock.getElapsedTime();
-
-      // Floating oscillation
-      group.position.y = Math.sin(elapsed * 2.2) * 0.06;
-
-      // Rotation speed up on hover
-      const rotSpeed = hoverRef.current ? 0.035 : 0.012;
-      group.rotation.y += rotSpeed;
-      group.rotation.x = Math.sin(elapsed * 1.2) * 0.15;
-
-      renderer.render(scene, camera);
-    };
-
-    animate();
-
-    return () => {
-      cancelAnimationFrame(frameId);
-      if (renderer.domElement && container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
-      }
-      renderer.dispose();
-      silverMat.dispose();
-      wireMat.dispose();
-      darkMetalMat.dispose();
-    };
-  }, [type]);
-
-  return <div ref={mountRef} className="w-[110px] h-[110px] flex items-center justify-center shrink-0 pointer-events-none" />;
+      <style>{`
+        .clip-crystal {
+          clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        }
+      `}</style>
+    </div>
+  );
 };

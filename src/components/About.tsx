@@ -1,26 +1,7 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React from 'react';
 import { AboutRobotCanvas } from './AboutRobotCanvas';
-import { Check, Shield, Cpu, Sparkles } from 'lucide-react';
 
 export const About: React.FC = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const [scrollFraction, setScrollFraction] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!sectionRef.current) return;
-      const rect = sectionRef.current.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      // fraction between 0 (entering) and 1 (leaving)
-      const fraction = Math.max(0, Math.min(1, (windowHeight - rect.top) / (windowHeight + rect.height)));
-      setScrollFraction(fraction);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   const pillars = [
     {
       title: 'Precision Engineering',
@@ -39,8 +20,7 @@ export const About: React.FC = () => {
   return (
     <section
       id="about"
-      ref={sectionRef}
-      className="relative py-28 px-6 sm:px-10 md:px-14 lg:px-20 xl:px-24 w-full z-20"
+      className="relative py-28 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 w-full z-20"
     >
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
         {/* Left Column: Typography & Philosophy */}
@@ -83,8 +63,8 @@ export const About: React.FC = () => {
         {/* Right Column: Second Cinematic Robot in Darkness */}
         <div className="lg:col-span-5 relative flex items-center justify-center">
           <div className="relative w-full rounded border border-neutral-900 bg-[#060606] overflow-hidden p-2">
-            {/* 3D Dark Silhouette Robot Canvas */}
-            <AboutRobotCanvas inViewProgress={scrollFraction} />
+            {/* 3D Dark Silhouette Robot Canvas (Self-contained, pauses when off-screen) */}
+            <AboutRobotCanvas />
 
             {/* Subtle corner tech coordinates */}
             <div className="absolute top-4 left-4 font-mono text-[9px] text-neutral-600 uppercase tracking-widest">

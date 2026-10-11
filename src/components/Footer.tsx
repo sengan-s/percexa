@@ -14,7 +14,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenConsultation }
   };
 
   return (
-    <footer className="bg-[#020202] border-t border-neutral-900 pt-20 pb-12 px-6 sm:px-10 md:px-14 lg:px-20 xl:px-24 w-full z-20 relative font-sans">
+    <footer className="bg-[#020202] border-t border-neutral-900 pt-20 pb-12 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 w-full z-20 relative font-sans">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
         {/* Brand & Tagline Column */}
         <div className="lg:col-span-2 space-y-4">

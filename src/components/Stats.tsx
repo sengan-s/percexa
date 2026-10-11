@@ -1,21 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 export const Stats: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [hasAnimated, setHasAnimated] = useState(false);
-
-  const [count50, setCount50] = useState(0);
-  const [count20, setCount20] = useState(0);
-  const [count15, setCount15] = useState(0);
-  const [count99, setCount99] = useState(0);
+  const el50Ref = useRef<HTMLSpanElement>(null);
+  const el20Ref = useRef<HTMLSpanElement>(null);
+  const el15Ref = useRef<HTMLSpanElement>(null);
+  const el99Ref = useRef<HTMLSpanElement>(null);
+  const hasAnimatedRef = useRef(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && !hasAnimated) {
-          setHasAnimated(true);
+        if (entries[0].isIntersecting && !hasAnimatedRef.current) {
+          hasAnimatedRef.current = true;
 
-          const duration = 1800; // ms
+          const duration = 1400; // ms
           const startTime = performance.now();
 
           const step = (now: number) => {
@@ -24,25 +23,25 @@ export const Stats: React.FC = () => {
             // Ease out cubic
             const ease = 1 - Math.pow(1 - progress, 3);
 
-            setCount50(Math.floor(ease * 50));
-            setCount20(Math.floor(ease * 20));
-            setCount15(Math.floor(ease * 15));
-            setCount99(Math.floor(ease * 99));
+            if (el50Ref.current) el50Ref.current.textContent = `${Math.floor(ease * 50)}+`;
+            if (el20Ref.current) el20Ref.current.textContent = `${Math.floor(ease * 20)}+`;
+            if (el15Ref.current) el15Ref.current.textContent = `${Math.floor(ease * 15)}+`;
+            if (el99Ref.current) el99Ref.current.textContent = `${Math.floor(ease * 99)}%`;
 
             if (progress < 1) {
               requestAnimationFrame(step);
             } else {
-              setCount50(50);
-              setCount20(20);
-              setCount15(15);
-              setCount99(99);
+              if (el50Ref.current) el50Ref.current.textContent = '50+';
+              if (el20Ref.current) el20Ref.current.textContent = '20+';
+              if (el15Ref.current) el15Ref.current.textContent = '15+';
+              if (el99Ref.current) el99Ref.current.textContent = '99%';
             }
           };
 
           requestAnimationFrame(step);
         }
       },
-      { threshold: 0.25 }
+      { threshold: 0.2 }
     );
 
     if (containerRef.current) {
@@ -50,32 +49,63 @@ export const Stats: React.FC = () => {
     }
 
     return () => observer.disconnect();
-  }, [hasAnimated]);
-
-  const stats = [
-    { value: `${count50}+`, label: 'Projects Delivered', desc: 'Deployed across fintech, healthcare, and robotics' },
-    { value: `${count20}+`, label: 'Technologies', desc: 'Modern high-performance toolchains and frameworks' },
-    { value: `${count15}+`, label: 'AI Solutions', desc: 'Proprietary enterprise models and autonomous agents' },
-    { value: `${count99}%`, label: 'Client Satisfaction', desc: 'Long-term strategic technology partnerships' },
-  ];
+  }, []);
 
   return (
     <section ref={containerRef} className="py-24 px-6 sm:px-10 md:px-14 lg:px-20 xl:px-24 w-full z-20 relative">
       <div className="border-y border-neutral-800/80 py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
-          {stats.map((item, idx) => (
-            <div key={idx} className="flex flex-col">
-              <span className="font-heading text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white mb-2 tabular-nums">
-                {item.value}
-              </span>
-              <span className="text-sm font-semibold tracking-wide text-neutral-200 uppercase font-sans mb-1">
-                {item.label}
-              </span>
-              <span className="text-xs text-neutral-500 font-sans leading-relaxed">
-                {item.desc}
-              </span>
-            </div>
-          ))}
+          {/* Stat 1 */}
+          <div className="flex flex-col">
+            <span ref={el50Ref} className="font-heading text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white mb-2 tabular-nums">
+              50+
+            </span>
+            <span className="text-sm font-semibold tracking-wide text-neutral-200 uppercase font-sans mb-1">
+              Projects Delivered
+            </span>
+            <span className="text-xs text-neutral-500 font-sans leading-relaxed">
+              Deployed across fintech, healthcare, and robotics
+            </span>
+          </div>
+
+          {/* Stat 2 */}
+          <div className="flex flex-col">
+            <span ref={el20Ref} className="font-heading text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white mb-2 tabular-nums">
+              20+
+            </span>
+            <span className="text-sm font-semibold tracking-wide text-neutral-200 uppercase font-sans mb-1">
+              Technologies
+            </span>
+            <span className="text-xs text-neutral-500 font-sans leading-relaxed">
+              Modern high-performance toolchains and frameworks
+            </span>
+          </div>
+
+          {/* Stat 3 */}
+          <div className="flex flex-col">
+            <span ref={el15Ref} className="font-heading text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white mb-2 tabular-nums">
+              15+
+            </span>
+            <span className="text-sm font-semibold tracking-wide text-neutral-200 uppercase font-sans mb-1">
+              AI Solutions
+            </span>
+            <span className="text-xs text-neutral-500 font-sans leading-relaxed">
+              Proprietary enterprise models and autonomous agents
+            </span>
+          </div>
+
+          {/* Stat 4 */}
+          <div className="flex flex-col">
+            <span ref={el99Ref} className="font-heading text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white mb-2 tabular-nums">
+              99%
+            </span>
+            <span className="text-sm font-semibold tracking-wide text-neutral-200 uppercase font-sans mb-1">
+              Client Satisfaction
+            </span>
+            <span className="text-xs text-neutral-500 font-sans leading-relaxed">
+              Long-term strategic technology partnerships
+            </span>
+          </div>
         </div>
       </div>
     </section>

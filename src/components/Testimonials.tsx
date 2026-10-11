@@ -30,7 +30,7 @@ export const Testimonials: React.FC = () => {
   ];
 
   return (
-    <section className="py-28 px-6 sm:px-10 md:px-14 lg:px-20 xl:px-24 w-full z-20 relative">
+    <section className="py-28 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 w-full z-20 relative">
       <div className="max-w-2xl mb-16">
         <span className="text-xs font-mono tracking-[0.25em] text-neutral-500 uppercase block mb-3">
           VERIFIED EXECUTIVE TESTIMONIALS

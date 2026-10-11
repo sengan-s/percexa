@@ -15,7 +15,7 @@ export const Hero: React.FC<HeroProps> = ({ onStartProject, onWatchShowreel, onO
   return (
     <section
       id="hero"
-      className="relative min-h-screen w-full flex items-center justify-between pt-28 pb-16 px-6 sm:px-10 md:px-14 lg:px-20 xl:px-24 z-20 pointer-events-none"
+      className="relative min-h-screen w-full flex items-center justify-between pt-28 pb-16 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 z-20 pointer-events-none"
     >
       {/* Left Content Column */}
       <div className="max-w-2xl xl:max-w-3xl pointer-events-auto">
@@ -104,7 +104,7 @@ export const Hero: React.FC<HeroProps> = ({ onStartProject, onWatchShowreel, onO
       <div className="hidden lg:block w-[45%] h-[550px]" aria-hidden="true" />
 
       {/* Scroll indicator (Bottom-Left) */}
-      <div className="absolute bottom-8 left-6 sm:left-10 md:left-14 lg:left-20 xl:left-24 flex items-center gap-3 pointer-events-auto">
+      <div className="absolute bottom-8 left-6 sm:left-8 md:left-12 lg:left-16 xl:left-20 flex items-center gap-3 pointer-events-auto">
         <div className="w-[1px] h-10 bg-neutral-800 relative overflow-hidden">
           <div className="w-full h-4 bg-white animate-scroll-down" />
         </div>

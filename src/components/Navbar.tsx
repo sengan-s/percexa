@@ -15,8 +15,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenChat, onNavigate, onOpenIn
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
+    let lastScrolled = false;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 40);
+      const scrolled = window.scrollY > 40;
+      if (scrolled !== lastScrolled) {
+        lastScrolled = scrolled;
+        setIsScrolled(scrolled);
+      }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -44,7 +49,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenChat, onNavigate, onOpenIn
             : 'bg-transparent py-5'
         }`}
       >
-        <div className="w-full px-6 sm:px-10 md:px-14 lg:px-20 xl:px-24 flex items-center justify-between">
+        <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 flex items-center justify-between">
           {/* Brand Mark */}
           <button
             onClick={() => {

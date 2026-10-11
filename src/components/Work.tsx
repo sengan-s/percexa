@@ -111,7 +111,7 @@ export const Work: React.FC<WorkProps> = ({ onSelectProject, onOpenPreview }) =>
   ];
 
   return (
-    <section id="work" className="relative py-28 px-6 sm:px-10 md:px-14 lg:px-20 xl:px-24 w-full z-20">
+    <section id="work" className="relative py-28 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 w-full z-20">
       {/* Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
         <div>

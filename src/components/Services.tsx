@@ -54,7 +54,7 @@ export const Services: React.FC<ServicesProps> = ({ onSelectService }) => {
   ];
 
   return (
-    <section id="services" className="relative py-28 px-6 sm:px-10 md:px-14 lg:px-20 xl:px-24 w-full z-20">
+    <section id="services" className="relative py-28 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 w-full z-20">
       {/* Section Header */}
       <div className="max-w-2xl mb-16">
         <span className="text-xs font-mono tracking-[0.25em] text-neutral-500 uppercase block mb-3">

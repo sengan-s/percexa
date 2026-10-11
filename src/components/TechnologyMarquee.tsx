@@ -20,7 +20,7 @@ export const TechnologyMarquee: React.FC = () => {
 
   return (
     <section className="py-24 border-y border-neutral-900 bg-[#040404] overflow-hidden z-20 relative">
-      <div className="w-full px-6 sm:px-10 md:px-14 lg:px-20 xl:px-24 mb-12 text-center">
+      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 mb-12 text-center">
         <span className="text-xs font-mono tracking-[0.25em] text-neutral-500 uppercase block mb-2">
           ENGINEERING TOOLCHAIN
         </span>

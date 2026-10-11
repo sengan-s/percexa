@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { motionState } from '../utils/motionState';
 
 export const ParticleTransition: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -13,35 +14,45 @@ export const ParticleTransition: React.FC = () => {
     let width = (canvas.width = canvas.parentElement?.clientWidth || window.innerWidth);
     let height = (canvas.height = 140);
 
+    let resizeTimeout: any;
     const handleResize = () => {
-      if (!canvas) return;
-      width = canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
-      height = canvas.height = 140;
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        if (!canvas) return;
+        width = canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
+        height = canvas.height = 140;
+      }, 100);
     };
 
     window.addEventListener('resize', handleResize);
 
-    // Particle definition
-    const particleCount = 180;
+    const isMobile = motionState.isMobile;
+    const particleCount = isMobile ? 35 : 70;
     const particles = Array.from({ length: particleCount }).map(() => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      vx: 1.5 + Math.random() * 3.5,
-      vy: (Math.random() - 0.5) * 0.4,
-      size: 1 + Math.random() * 2,
-      alpha: 0.2 + Math.random() * 0.7,
-      trail: 12 + Math.random() * 24,
+      vx: 1.5 + Math.random() * 3.0,
+      vy: (Math.random() - 0.5) * 0.3,
+      size: 1 + Math.random() * 1.8,
+      alpha: 0.2 + Math.random() * 0.6,
+      trail: 10 + Math.random() * 18,
     }));
 
-    let animId: number;
+    let animId: number | null = null;
+    let isVisible = false;
 
     const render = () => {
+      if (!isVisible) {
+        animId = null;
+        return;
+      }
+
       ctx.clearRect(0, 0, width, height);
 
       // Subtle horizontal center energy guide line
       const grad = ctx.createLinearGradient(0, height / 2, width, height / 2);
       grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
-      grad.addColorStop(0.5, 'rgba(255, 255, 255, 0.12)');
+      grad.addColorStop(0.5, 'rgba(255, 255, 255, 0.1)');
       grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
       ctx.strokeStyle = grad;
       ctx.lineWidth = 1;
@@ -55,12 +66,11 @@ export const ParticleTransition: React.FC = () => {
         p.x += p.vx;
         p.y += p.vy;
 
-        if (p.x > width + 50) {
-          p.x = -50;
+        if (p.x > width + 40) {
+          p.x = -40;
           p.y = Math.random() * height;
         }
 
-        // Draw particle with horizontal kinetic motion trail
         ctx.beginPath();
         const pGrad = ctx.createLinearGradient(p.x - p.trail, p.y, p.x, p.y);
         pGrad.addColorStop(0, 'rgba(200, 200, 200, 0)');
@@ -72,7 +82,6 @@ export const ParticleTransition: React.FC = () => {
         ctx.lineTo(p.x, p.y);
         ctx.stroke();
 
-        // Bright tip
         ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size * 0.7, 0, Math.PI * 2);
@@ -82,10 +91,23 @@ export const ParticleTransition: React.FC = () => {
       animId = requestAnimationFrame(render);
     };
 
-    render();
+    // Only run when in viewport!
+    const observer = new IntersectionObserver(
+      (entries) => {
+        isVisible = entries[0].isIntersecting;
+        if (isVisible && !animId) {
+          render();
+        }
+      },
+      { threshold: 0.05 }
+    );
+
+    observer.observe(canvas);
 
     return () => {
-      cancelAnimationFrame(animId);
+      observer.disconnect();
+      if (animId) cancelAnimationFrame(animId);
+      clearTimeout(resizeTimeout);
       window.removeEventListener('resize', handleResize);
     };
   }, []);

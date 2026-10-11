@@ -19,15 +19,12 @@ import { PrototypePreviewModal } from './components/PrototypePreviewModal';
 import { RobotInspectorModal } from './components/RobotInspectorModal';
 import { ServiceBlueprintModal } from './components/ServiceBlueprintModal';
 import { Project } from './types';
-import { Bot, Eye, Sparkles } from 'lucide-react';
+import { Bot, Eye } from 'lucide-react';
 import { sound } from './utils/sound';
+import { motionState } from './utils/motionState';
 
 export default function App() {
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [scrollVelocity, setScrollVelocity] = useState(0);
-  const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
-
-  // Modal States
+  // Modal & Drawer UI States (only update when user explicitly opens/closes a modal)
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isShowreelOpen, setIsShowreelOpen] = useState(false);
   const [isInspectorOpen, setIsInspectorOpen] = useState(false);
@@ -37,13 +34,11 @@ export default function App() {
 
   const lenisRef = useRef<Lenis | null>(null);
 
-  // Initialize Lenis smooth scroll
+  // Initialize unified Lenis smooth scroll without any React state thrashing
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (!prefersReducedMotion) {
+    if (!motionState.prefersReducedMotion) {
       const lenis = new Lenis({
-        duration: 1.2,
+        duration: 1.1,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         orientation: 'vertical',
         smoothWheel: true,
@@ -51,40 +46,41 @@ export default function App() {
 
       lenisRef.current = lenis;
 
+      // Update mutable motionState directly - ZERO React re-renders on scroll frames!
       lenis.on('scroll', (e: any) => {
         const total = document.documentElement.scrollHeight - window.innerHeight;
-        const progress = total > 0 ? e.scroll / total : 0;
-        setScrollProgress(progress);
-        setScrollVelocity(e.velocity || 0);
+        motionState.scrollProgress = total > 0 ? e.scroll / total : 0;
+        motionState.scrollVelocity = e.velocity || 0;
+        motionState.scrollY = e.scroll;
       });
 
+      let rafId: number;
       function raf(time: number) {
         lenis.raf(time);
-        requestAnimationFrame(raf);
+        rafId = requestAnimationFrame(raf);
       }
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
 
       return () => {
+        cancelAnimationFrame(rafId);
         lenis.destroy();
       };
     } else {
       const handleNativeScroll = () => {
         const total = document.documentElement.scrollHeight - window.innerHeight;
-        const progress = total > 0 ? window.scrollY / total : 0;
-        setScrollProgress(progress);
+        motionState.scrollProgress = total > 0 ? window.scrollY / total : 0;
+        motionState.scrollY = window.scrollY;
       };
       window.addEventListener('scroll', handleNativeScroll, { passive: true });
       return () => window.removeEventListener('scroll', handleNativeScroll);
     }
   }, []);
 
-  // Global mouse tracking for 3D robot reactivity
+  // Global mouse tracking - directly updates mutable motionState without re-rendering App!
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({
-        x: e.clientX / window.innerWidth,
-        y: e.clientY / window.innerHeight,
-      });
+      motionState.mouseX = e.clientX / window.innerWidth;
+      motionState.mouseY = e.clientY / window.innerHeight;
     };
 
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
@@ -95,30 +91,26 @@ export default function App() {
     const el = document.getElementById(id);
     if (!el) return;
     if (lenisRef.current) {
-      lenisRef.current.scrollTo(el, { offset: -30, duration: 1.4 });
+      lenisRef.current.scrollTo(el, { offset: -30, duration: 1.2 });
     } else {
       el.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   return (
-    <div className="relative min-h-screen bg-[#030303] text-[#F5F5F5] selection:bg-neutral-800 selection:text-white overflow-hidden">
+    <div className="relative min-h-screen w-full m-0 p-0 bg-[#030303] text-[#F5F5F5] selection:bg-neutral-800 selection:text-white overflow-x-hidden">
       {/* Subtle atmospheric noise and moving gradient background */}
-      <div className="fixed inset-0 pointer-events-none bg-noise opacity-30 z-0" />
+      <div className="fixed inset-0 pointer-events-none bg-noise opacity-25 z-0" />
       <div
-        className="fixed inset-0 pointer-events-none z-0 opacity-20"
+        className="fixed inset-0 pointer-events-none z-0 opacity-15"
         style={{
           background:
-            'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(200, 200, 200, 0.12), transparent)',
+            'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(200, 200, 200, 0.1), transparent)',
         }}
       />
 
       {/* Main 3D Kinetic Humanoid Robot & Particle System */}
-      <KineticRobotCanvas
-        scrollProgress={scrollProgress}
-        scrollVelocity={scrollVelocity}
-        mousePos={mousePos}
-      />
+      <KineticRobotCanvas />
 
       {/* Navigation */}
       <Navbar

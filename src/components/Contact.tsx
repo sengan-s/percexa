@@ -54,7 +54,7 @@ export const Contact: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="relative min-h-screen py-28 px-6 sm:px-10 md:px-14 lg:px-20 xl:px-24 w-full z-20 flex items-center">
+    <section id="contact" className="relative min-h-screen py-28 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 w-full z-20 flex items-center">
       {/* Background 3D Robot Head (Optic activates on form focus!) */}
       <ContactRobotCanvas isFormFocused={isFormFocused} />
 
